@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    navya.solutions.service: graphql-gateway
+  name: graphql-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      navya.solutions.service: graphql-gateway
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        navya.solutions.service: graphql-gateway
+    spec:
+      containers:
+        - env:
+            - name: app-config.grpcServiceHost
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_HOST
+            - name: app-config.grpcServicePort
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_PORT
+          image: navyasolutions/graphql-gateway:latest
+          imagePullPolicy: ""
+          name: graphql-gateway
+          ports:
+            - containerPort: 8086
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    navya.solutions.service: graphql-gateway
+  name: graphql-gateway-service
+spec:
+  selector:
+    navya.solutions.service: graphql-gateway
+  type: LoadBalancer ## setting for external service
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8086
+      targetPort: 8086
+      #nodePort: 30001 ## setting for external service. Open external port

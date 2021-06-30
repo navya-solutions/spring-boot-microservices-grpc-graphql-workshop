@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    navya.solutions.service: rest-gateway
+  name: rest-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      navya.solutions.service: rest-gateway
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        navya.solutions.service: rest-gateway
+    spec:
+      containers:
+        - name: rest-gateway
+          image: navyasolutions/rest-gateway:latest
+          imagePullPolicy: ""
+          ports:
+            - containerPort: 8086
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    navya.solutions.service: rest-gateway
+  name: rest-gateway-service
+spec:
+  selector:
+    navya.solutions.service: rest-gateway
+  type: LoadBalancer ## setting for external service
+  ports:
+    - name: web
+      protocol: TCP
+      port: 8086
+      targetPort: 8086
+      #nodePort: 30001 ## setting for external service. Open external port
