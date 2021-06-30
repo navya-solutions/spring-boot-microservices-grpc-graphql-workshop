@@ -1,0 +1,102 @@
+name: Master branch
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Test - Units & Integrations
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+            navya-solutions-maven
+      - name: Maven Package
+        run: mvn -B clean package -DskipTests
+      - name: Maven Verify
+        run: mvn -B clean verify -Pintegration-test
+  graphql-gateway-docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-18.04
+    needs: [ test ]
+    env:
+      REPO: navyasolutions/graphql-gateway
+      DIR: graphql-gateway
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+        working-directory: $DIR
+      - name: Build Docker image
+        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        working-directory: $DIR
+      - name: Publish Docker latest image
+        run: docker push $REPO
+        working-directory: $DIR
+      - name: Publish Docker tag image
+        run: docker push $REPO:${GITHUB_SHA::8}
+        working-directory: $DIR
+  graphql-service-docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-18.04
+    needs: [ test ]
+    env:
+      REPO: navyasolutions/graphql-service
+      DIR: graphql-service
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+        working-directory: $DIR
+      - name: Build Docker image
+        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        working-directory: $DIR
+      - name: Publish Docker latest image
+        run: docker push $REPO
+        working-directory: $DIR
+      - name: Publish Docker tag image
+        run: docker push $REPO:${GITHUB_SHA::8}
+        working-directory: $DIR
+  rest-gateway-docker:
+    name: Publish - Docker Hub
+    runs-on: ubuntu-18.04
+    needs: [ test ]
+    env:
+      REPO: navyasolutions/rest-gateway
+      DIR: rest-gateway
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+        working-directory: $DIR
+      - name: Build Docker image
+        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        working-directory: $DIR
+      - name: Publish Docker latest image
+        run: docker push $REPO
+        working-directory: $DIR
+      - name: Publish Docker tag image
+        run: docker push $REPO:${GITHUB_SHA::8}
+        working-directory: $DIR
