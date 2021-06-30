@@ -26,7 +26,7 @@ jobs:
       - name: Maven Verify
         run: mvn -B clean verify -Pintegration-test
   graphql-gateway-docker:
-    name: Publish - Docker Hub
+    name: Publish Graphql Gateway- Docker Hub
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
@@ -42,7 +42,7 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
         working-directory: $DIR
       - name: Build Docker image
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
         working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
@@ -51,7 +51,7 @@ jobs:
         run: docker push $REPO:${GITHUB_SHA::8}
         working-directory: $DIR
   graphql-service-docker:
-    name: Publish - Docker Hub
+    name: Publish Graphql Service- Docker Hub
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
@@ -67,7 +67,7 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
         working-directory: $DIR
       - name: Build Docker image
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
         working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
@@ -76,7 +76,7 @@ jobs:
         run: docker push $REPO:${GITHUB_SHA::8}
         working-directory: $DIR
   rest-gateway-docker:
-    name: Publish - Docker Hub
+    name: Publish Rest Gateway- Docker Hub
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
@@ -92,7 +92,7 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
         working-directory: $DIR
       - name: Build Docker image
-        run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+        run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
         working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
