@@ -46,13 +46,13 @@ jobs:
         run: docker push $REPO
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-  graphql-service-docker:
-    name: Publish Graphql Service- Docker Hub
+  grpc-service-docker:
+    name: Publish Grpc Service- Docker Hub
     runs-on: ubuntu-18.04
-    needs: [ test, graphql-gateway-docker ]
+    needs: [ test]
     env:
-      REPO: navyasolutions/graphql-service
-      DIR: graphql-service
+      REPO: navyasolutions/grpc-service
+      DIR: grpc-service
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 16
