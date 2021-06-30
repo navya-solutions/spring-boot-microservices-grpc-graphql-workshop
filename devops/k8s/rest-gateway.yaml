@@ -20,7 +20,7 @@ spec:
           image: navyasolutions/rest-gateway:latest
           imagePullPolicy: ""
           ports:
-            - containerPort: 8086
+            - containerPort: 8087
           resources: {}
       restartPolicy: Always
       serviceAccountName: ""
@@ -40,6 +40,6 @@ spec:
   ports:
     - name: web
       protocol: TCP
-      port: 8086
-      targetPort: 8086
+      port: 8087
+      targetPort: 8087
       #nodePort: 30001 ## setting for external service. Open external port

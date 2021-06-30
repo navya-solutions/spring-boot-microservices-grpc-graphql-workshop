@@ -179,10 +179,10 @@ delete configmap
 `kubectl delete -n default configmap`
 
 delete service
-`kubectl delete service/graphql-gateway service/rest-gateway service/grpc-service`
+`kubectl delete service/graphql-gateway-service service/grpc-service service/rest-gateway-service`
 
 delete deployment
-`kubectl delete deployment.apps/graphql-gateway deployment.apps/rest-gateway deployment.apps/grpc-service`
+` kubectl delete deployment.apps/graphql-gateway deployment.apps/grpc-service  deployment.apps/rest-gateway`
 
 APp URL :
 http://LOAD-BALANCER_ARM:8086/graphql

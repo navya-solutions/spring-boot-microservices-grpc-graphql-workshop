@@ -47,7 +47,7 @@ metadata:
 spec:
   selector:
     navya.solutions.service: grpc-service
-  type: LoadBalancer ## setting for external service
+  #type: LoadBalancer ## setting for external service
   ports:
     - name: grpc
       protocol: TCP
