@@ -45,7 +45,7 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Build Docker image
-        run: docker build --file $DIR_GG/Dockerfile -t $REPO_GG:latest -t $REPO_GG:${GITHUB_SHA::8} .
+        run: docker build --file $DIR_GG/Dockerfile -t $REPO_GG:latest -t $REPO_GG:${GITHUB_SHA::8} $DIR_GG/.
       - name: Publish Docker latest image
         run: docker push $REPO_GG
       - name: Publish Docker tag image
