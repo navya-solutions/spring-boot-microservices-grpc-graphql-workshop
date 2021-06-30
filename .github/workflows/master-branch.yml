@@ -53,7 +53,7 @@ jobs:
   graphql-service-docker:
     name: Publish Graphql Service- Docker Hub
     runs-on: ubuntu-18.04
-    needs: [ test ]
+    needs: [ test, graphql-gateway-docker ]
     env:
       REPO: navyasolutions/graphql-service
       DIR: graphql-service
@@ -78,7 +78,7 @@ jobs:
   rest-gateway-docker:
     name: Publish Rest Gateway- Docker Hub
     runs-on: ubuntu-18.04
-    needs: [ test ]
+    needs: [ test, graphql-service-docker ]
     env:
       REPO: navyasolutions/rest-gateway
       DIR: rest-gateway
