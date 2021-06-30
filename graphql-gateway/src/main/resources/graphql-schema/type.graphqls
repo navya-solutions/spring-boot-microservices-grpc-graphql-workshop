@@ -1,0 +1,7 @@
+type AppDetail {
+    identifier:ID!
+    appName: String
+    message: String
+    version: String
+
+}
