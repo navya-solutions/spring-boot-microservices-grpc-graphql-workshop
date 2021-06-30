@@ -30,12 +30,12 @@ jobs:
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
-      REPO-GG: navyasolutions/graphql-gateway
-      DIR-GG: graphql-gateway
-      REPO-GS: navyasolutions/graphql-service
-      DIR-GS: graphql-service
-      REPO-RG: navyasolutions/rest-gateway
-      DIR-RG: rest-gateway
+      REPO_GG: navyasolutions/graphql-gateway
+      DIR_GG: graphql-gateway
+      REPO_GS: navyasolutions/graphql-service
+      DIR_GS: graphql-service
+      REPO_RG: navyasolutions/rest-gateway
+      DIR_RG: rest-gateway
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 16
@@ -45,8 +45,8 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Build Docker image
-        run: docker build --file DIR-GG/Dockerfile -t $REPO-GG:latest -t $REPO-GG:${GITHUB_SHA::8} .
+        run: docker build --file $DIR_GG/Dockerfile -t $REPO_GG:latest -t $REPO_GG:${GITHUB_SHA::8} .
       - name: Publish Docker latest image
-        run: docker push $REPO-GG
+        run: docker push $REPO_GG
       - name: Publish Docker tag image
-        run: docker push $REPO-GG:${GITHUB_SHA::8}
+        run: docker push $REPO_GG:${GITHUB_SHA::8}
