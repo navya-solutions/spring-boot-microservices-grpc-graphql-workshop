@@ -1,0 +1,41 @@
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: Gateway Project
+  output:
+    ansi:
+      enabled: ALWAYS
+server:
+  port: ${PORT:8086}
+
+app-config:
+  grpcServiceHost: localhost
+  grpcServicePort: 6566
+
+
+voyager:
+  enabled: true
+
+graphql:
+  servlet:
+    maxQueryDepth: 15
+    mapping: /graphql
+    exceptionHandlersEnabled: false
+    tracingEnabled: true
+    enabled: true
+    corsEnabled: true
+    websocket:
+      enabled: false
+      path: /graphql
+    subscriptions:
+      websocket:
+        path: /graphql
+  playground:
+    enabled: true
+    headers:
+      client_id: "8466ECBE9E1C4F1C85E02A88CE573A26"
+      authorization_token: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjNkOWIwYWQ4LTA5NjktNDBlYS1iOWMwLWNkZDMwYjcxZGU0YiJ9.eyJhdWQiOiJTSVRFLVRSQUNLRVIiLCJQSE9ORS1OVU1CRVIiOiIrNDYxMjM0NTY3ODkwIiwiaXNzIjoiU0lURS1UUkFDS0VSLUFQUCIsIlVTRVItUFJFRkVSRU5DRSI6eyJ0cmFja0xhc3RWaXNpdFNpdGUiOiJmYWxzZSIsInRpbWVab25lIjoiQ0VUIiwibm90aWZpY2F0aW9uU2V0dGluZyI6IkVNQUlMIn0sIkVNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJleHAiOjE2MjQ3MjIzMTAsIlVTRVItUExBVEZPUk0tSUQiOiIwQjA0NkY0MzM2NUY0M0UyQkExMUYyNTAyQzZEQkI2MiIsImlhdCI6MTYyNDM2MjMxMSwianRpIjoiNDFkMmViYzctYzM1NC00ZmM4LWIxOTAtNDQ2NTdjMGViMDU2In0.l0KV0uI08Veh-McktW0jYUXmDslpiB3Gdmhby0JElk26HkRd5qMi5FQxH3_bz_iKs0VHvVemjisH3jqFeCtDfA"
+    tabs:
+      - name: getAppDetails
+        query: classpath:playground/getAppDetails.graphql

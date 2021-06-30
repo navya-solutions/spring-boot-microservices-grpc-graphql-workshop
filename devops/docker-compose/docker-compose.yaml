@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  graphql-gateway:
+    container_name: graphql-gateway
+    image: navyasolutions/graphql-gateway:latest
+    networks:
+      - ns-network
+    environment:
+      app-config.grpcServiceHost: "${GRPC_SERVICE_HOST}"
+      app-config.grpcServicePort: "${GRPC_SERVICE_PORT}"
+    ports:
+      - 8086:8086
+    depends_on:
+      - grpc-service
+
+  rest-gateway:
+    container_name: rest-gateway
+    image: navyasolutions/rest-gateway:latest
+    networks:
+      - ns-network
+    ports:
+      - 8087:8087
+
+  grpc-service:
+    container_name: grpc-service
+    image: navyasolutions/grpc-service:latest
+    networks:
+      - ns-network
+    volumes:
+      - ~/docker/grpc-service/:/app
+    ports:
+      - 6566:6566
+
+networks:
+  ns-network:
+
+volumes:
+  ns-volume:

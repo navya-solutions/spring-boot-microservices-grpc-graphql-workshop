@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    navya.solutions.service: grpc-service
+  name: grpc-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      navya.solutions.service: grpc-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        navya.solutions.service: grpc-service
+    spec:
+      containers:
+        - env:
+            - name: app-config.grpcServiceHost
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_HOST
+            - name: app-config.grpcServicePort
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_PORT
+          image: navyasolutions/grpc-service:latest
+          imagePullPolicy: ""
+          name: grpc-service
+          ports:
+            - containerPort: 6566
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    navya.solutions.service: grpc-service
+  name: grpc-service
+spec:
+  selector:
+    navya.solutions.service: grpc-service
+  #type: LoadBalancer ## setting for external service
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 6566
+      targetPort: 6566
+      #nodePort: 30001 ## setting for external service. Open external port

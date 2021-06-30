@@ -1,0 +1,10 @@
+type Query {
+
+    getAppDetails : [AppDetail]
+
+}
+
+
+
+
+

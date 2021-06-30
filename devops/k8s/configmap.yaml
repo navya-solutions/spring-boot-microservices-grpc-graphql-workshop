@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    navya.solutions.service: grpc-service-config
+  name: grpc-service-config
+data:
+  GRPC_SERVICE_HOST: grpc-service
+  GRPC_SERVICE_PORT: "6566"
