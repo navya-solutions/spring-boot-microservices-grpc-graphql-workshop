@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 16
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
           java-version: 16
       - uses: actions/cache@v2
@@ -35,21 +35,17 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 16
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
           java-version: 16
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        working-directory: $DIR
       - name: Build Docker image
         run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
-        working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
-        working-directory: $DIR
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-        working-directory: $DIR
   graphql-service-docker:
     name: Publish Graphql Service- Docker Hub
     runs-on: ubuntu-18.04
@@ -65,20 +61,16 @@ jobs:
           java-version: 16
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        working-directory: $DIR
       - name: Build Docker image
         run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
-        working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
-        working-directory: $DIR
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-        working-directory: $DIR
   rest-gateway-docker:
     name: Publish Rest Gateway- Docker Hub
     runs-on: ubuntu-18.04
-    needs: [ test, graphql-service-docker ]
+    needs: [ test ]
     env:
       REPO: navyasolutions/rest-gateway
       DIR: rest-gateway
@@ -90,13 +82,9 @@ jobs:
           java-version: 16
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        working-directory: $DIR
       - name: Build Docker image
         run: docker build --file $DIR/Dockerfile -t $REPO:latest -t $REPO:${GITHUB_SHA::8} $DIR/.
-        working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
-        working-directory: $DIR
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-        working-directory: $DIR
