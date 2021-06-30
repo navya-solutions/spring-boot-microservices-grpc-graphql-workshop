@@ -26,7 +26,7 @@ jobs:
       - name: Maven Verify
         run: mvn -B clean verify -Pintegration-test
   graphql-gateway-docker:
-    name: Publish - Docker Hub
+    name: Publish Graphql Gateway- Docker Hub
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
@@ -40,18 +40,15 @@ jobs:
           java-version: 16
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        working-directory: $DIR
       - name: Build Docker image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
         working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
-        working-directory: $DIR
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-        working-directory: $DIR
   graphql-service-docker:
-    name: Publish - Docker Hub
+    name: Publish Graphql Service - Docker Hub
     runs-on: ubuntu-18.04
     needs: [ test ]
     env:
@@ -65,16 +62,13 @@ jobs:
           java-version: 16
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        working-directory: $DIR
       - name: Build Docker image
         run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
         working-directory: $DIR
       - name: Publish Docker latest image
         run: docker push $REPO
-        working-directory: $DIR
       - name: Publish Docker tag image
         run: docker push $REPO:${GITHUB_SHA::8}
-        working-directory: $DIR
   rest-gateway-docker:
     name: Publish - Docker Hub
     runs-on: ubuntu-18.04
