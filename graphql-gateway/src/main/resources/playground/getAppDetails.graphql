@@ -1,0 +1,8 @@
+query {
+    getAppDetails {
+        identifier
+        appName
+        message
+        version
+    }
+}

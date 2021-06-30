@@ -1,0 +1,12 @@
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: Rest Gateway Project
+  output:
+    ansi:
+      enabled: ALWAYS
+server:
+  port: ${PORT:8088}
+grpc:
+  port: 6566

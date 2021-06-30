@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.navya.solutions.grpc.proto.service";
+
+package com.navya.solutions.grpc.proto.service;
+
+// The  service definition.
+service SampleService {
+  rpc GetAppDetail(AppResourceRequest) returns (AppResourcesResponse);
+}
+
+message AppResourceRequest{
+  string identifier = 1;
+}
+message AppResourceResponse {
+  string identifier = 1;
+  string appName = 2;
+  string message = 3;
+  string version = 4;
+}
+message AppResourcesResponse{
+  repeated AppResourceResponse appResources = 1;
+}
