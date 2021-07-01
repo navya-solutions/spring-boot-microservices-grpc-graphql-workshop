@@ -189,3 +189,5 @@ http://LOAD-BALANCER_ARM:8086/graphql
 http://LOAD-BALANCER_ARM:8086/playground
 
 
+### add support for https using AWS certificate
+https://aws.amazon.com/premiumsupport/knowledge-center/terminate-https-traffic-eks-acm/
