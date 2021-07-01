@@ -38,8 +38,11 @@ spec:
     navya.solutions.service: rest-gateway
   type: LoadBalancer ## setting for external service
   ports:
-    - name: web
+    - name: custom
       protocol: TCP
       port: 8087
+      targetPort: 8087
+    - name: http
+      port: 80
       targetPort: 8087
       #nodePort: 30001 ## setting for external service. Open external port

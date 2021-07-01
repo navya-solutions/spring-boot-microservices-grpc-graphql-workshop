@@ -44,15 +44,23 @@ metadata:
   labels:
     navya.solutions.service: graphql-gateway
   name: graphql-gateway-service
+  annotations:
+    # Note that the backend talks over HTTP.
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    # TODO: Fill in with the ARN of your certificate.
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:{region}:{user id}:certificate/{id}
+    # Only run SSL on the port named "https" below.
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
 spec:
   selector:
     navya.solutions.service: graphql-gateway
   type: LoadBalancer # setting for external service
   ports:
-    - name: custom
-      port: 8086
-      targetPort: 8086
     - name: http
+      protocol: TCP
       port: 80
+      targetPort: 8086
+    - name: https
+      port: 443
       targetPort: 8086
       #nodePort: 30001 ## setting for external service. Open external port
