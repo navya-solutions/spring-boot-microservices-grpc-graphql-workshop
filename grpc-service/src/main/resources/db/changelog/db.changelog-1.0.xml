@@ -1,5 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet author="a316916 (generated)" id="1625243786072-1">
         <createTable tableName="post">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -48,21 +50,34 @@
         </createTable>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-6">
-        <addUniqueConstraint columnNames="external_identifier" constraintName="uk_nch2vw7uqd2y2v9jhw515stbo" tableName="post"/>
+        <addUniqueConstraint columnNames="external_identifier" constraintName="uk_nch2vw7uqd2y2v9jhw515stbo"
+                             tableName="post"/>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-7">
-        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_detail" constraintName="fk46mm0e5earch2ws3ffhl533aa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_detail"
+                                 constraintName="fk46mm0e5earch2ws3ffhl533aa" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="post" validate="true"/>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-8">
-        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_tag" constraintName="fkc2auetuvsec0k566l0eyvr9cs" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_tag"
+                                 constraintName="fkc2auetuvsec0k566l0eyvr9cs" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="post" validate="true"/>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-9">
         <addUniqueConstraint columnNames="name" constraintName="uk_qp93jyuw586kcgdajsb3tfbjy" tableName="tag"/>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-10">
-        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_comment" constraintName="fkna4y825fdc5hw8aow65ijexm0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="post_comment"
+                                 constraintName="fkna4y825fdc5hw8aow65ijexm0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="post" validate="true"/>
     </changeSet>
     <changeSet author="a316916 (generated)" id="1625243786072-11">
-        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="post_tag" constraintName="fkac1wdchd2pnur3fl225obmlg0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tag" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="post_tag"
+                                 constraintName="fkac1wdchd2pnur3fl225obmlg0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="tag" validate="true"/>
     </changeSet>
 </databaseChangeLog>
