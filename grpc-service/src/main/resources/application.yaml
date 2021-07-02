@@ -17,7 +17,7 @@ spring:
     open-in-view: false
     hibernate:
       #create-drop validate create
-      ddl-auto: create-drop
+      ddl-auto: validate
   # Enabling H2 Console
   h2:
     console:
