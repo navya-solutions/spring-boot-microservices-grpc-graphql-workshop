@@ -1,0 +1,23 @@
+mutation {
+    createPost(
+        post: {
+            title: "title"
+            detail: { createdOn: 12234324, createdBy: "Yogesh" }
+            comments: [{ review: "review1" }, { review: "review2" }]
+            tags: [{ name: "name11" }, { name: "nam212" }]
+        }
+    ) {
+        id
+        title
+        detail {
+            createdOn
+            createdBy
+        }
+        Comments {
+            review
+        }
+        tags {
+            name
+        }
+    }
+}

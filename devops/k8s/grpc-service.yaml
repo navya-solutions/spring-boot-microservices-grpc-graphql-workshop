@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       navya.solutions.service: grpc-service
-  strategy: {}
+  strategy: { }
   template:
     metadata:
       labels:
@@ -32,11 +32,11 @@ spec:
           name: grpc-service
           ports:
             - containerPort: 6566
-          resources: {}
+          resources: { }
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null
-status: {}
+status: { }
 ---
 apiVersion: v1
 kind: Service

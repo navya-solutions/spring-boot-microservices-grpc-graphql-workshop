@@ -1,7 +1,7 @@
 package com.navya.soutions.mapper;
 
 import com.navya.solutions.grpc.proto.service.AppResourceResponse;
-import com.navya.soutions.graphql.type.AppDetail;
+import com.navya.soutions.graphql.type.AppDetailType;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -13,11 +13,11 @@ public interface AppDetailMapper {
 
     // Mappings from Grpc Objects ---> GraphQL Objects
 
-   AppResourceResponse mapJpaDataModelToGrpcApi(AppDetail source);
+    AppResourceResponse mapJpaDataModelToGrpcApi(AppDetailType source);
 
     @Mappings({
             @Mapping(target = ".", source = "appResourcesList"),
     })
-    Set<AppDetail> mapJpaDataModelToGrpcApi(List<AppResourceResponse> source);
+    Set<AppDetailType> mapJpaDataModelToGrpcApi(List<AppResourceResponse> source);
 
 }

@@ -3,5 +3,22 @@ type AppDetail {
     appName: String
     message: String
     version: String
+}
+type PostType {
+    id:ID!
+    title :String
+    detail:PostDetailType
+    Comments:[CommentType]
+    tags:[TagType]
+}
+type TagType{
+    name:String
+}
+type CommentType{
+    review:String
+}
 
+type PostDetailType{
+    createdOn:Int
+    createdBy:String
 }

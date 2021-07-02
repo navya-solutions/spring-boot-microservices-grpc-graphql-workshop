@@ -10,11 +10,62 @@ package com.navya.solutions.grpc.proto.service;
 // The  service definition.
 service SampleService {
   rpc GetAppDetail(AppResourceRequest) returns (AppResourcesResponse);
+  rpc CreatePost(PostRequest) returns (PostResponse);
+  rpc GetPost(GetPostRequest) returns (PostResponse);
+  rpc DeletePost(DeletePostRequest) returns (google.protobuf.Empty);
+
+  rpc AddComment(AddCommentRequest) returns (PostResponse);
+  rpc AddTag(AddTagRequest) returns (PostResponse);
+
+}
+
+message AddTagRequest{
+  string externalIdentifier = 1;
+  PostTag postTag = 2;
+}
+
+message AddCommentRequest{
+  string externalIdentifier = 1;
+  PostComment postComment = 2;
+}
+
+message DeletePostRequest{
+  string externalIdentifier = 1;
+}
+message GetPostRequest{
+  string externalIdentifier = 1;
+}
+message PostResponse{
+  Post post = 1;
+  string externalIdentifier = 2;
+}
+
+message PostRequest{
+  Post post = 1;
+}
+
+message Post{
+  string title = 1;
+  PostDetail postDetail = 2;
+  repeated PostComment postComment = 3;
+  repeated PostTag postTag = 4;
+}
+message PostTag{
+  string name = 1;
+}
+message PostComment{
+  string review = 1;
+}
+
+message PostDetail{
+  int64 createdOn = 1;
+  string createdBy = 2;
 }
 
 message AppResourceRequest{
   string identifier = 1;
 }
+
 message AppResourceResponse {
   string identifier = 1;
   string appName = 2;

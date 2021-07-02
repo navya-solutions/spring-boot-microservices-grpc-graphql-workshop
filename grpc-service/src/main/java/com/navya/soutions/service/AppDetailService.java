@@ -1,17 +1,16 @@
 package com.navya.soutions.service;
 
+import com.navya.soutions.common.CustomUtils;
 import com.navya.soutions.dto.AppDetail;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class AppDetailService {
     public Set<AppDetail> getAppDetails() {
         return Set.of(AppDetail.builder()
-                .identifier(createIdentifier())
+                .identifier(CustomUtils.createExternalIdentifier())
                 .appName("SAMPLE-GRPC-SERVICE-APP")
                 .message("GRPC-SERVICE-MESSAGE")
                 .version("1.0")
@@ -19,10 +18,4 @@ public class AppDetailService {
     }
 
 
-    private String createIdentifier() {
-        return UUID.randomUUID()
-                .toString()
-                .toUpperCase(Locale.ROOT)
-                .replace("-", "");
-    }
 }
