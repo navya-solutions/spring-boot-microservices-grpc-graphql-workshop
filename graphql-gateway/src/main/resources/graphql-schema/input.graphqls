@@ -1,0 +1,17 @@
+input PostInput {
+    title :String
+    detail:PostDetailInput
+    comments:[CommentInput]
+    tags:[TagInput]
+}
+input TagInput{
+    name:String
+}
+input CommentInput{
+    review:String
+}
+
+input PostDetailInput{
+    createdOn:Int
+    createdBy:String
+}

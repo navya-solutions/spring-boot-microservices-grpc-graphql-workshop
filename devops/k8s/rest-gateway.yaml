@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       navya.solutions.service: rest-gateway
-  strategy: {}
+  strategy: { }
   template:
     metadata:
       labels:
@@ -21,11 +21,11 @@ spec:
           imagePullPolicy: ""
           ports:
             - containerPort: 8087
-          resources: {}
+          resources: { }
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null
-status: {}
+status: { }
 ---
 apiVersion: v1
 kind: Service

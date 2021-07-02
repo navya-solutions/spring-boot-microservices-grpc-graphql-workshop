@@ -30,7 +30,27 @@ services:
       - ~/docker/grpc-service/:/app
     ports:
       - 6566:6566
+    environment:
+      SPRING_DATASOURCE_URL: "${GRPC_SERVICE_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${GRPC_SERVICE_DB_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${GRPC_SERVICE_DB_PASSWORD}"
+    depends_on:
+      - postgres
 
+
+  postgres:
+    container_name: workshop-postgresql
+    image: navyasolutions/workshop-postgresql:1.0
+    volumes:
+      - ns-volume:/var/lib/postgresql/data
+    networks:
+      - ns-network
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: st001_op
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
 networks:
   ns-network:
 

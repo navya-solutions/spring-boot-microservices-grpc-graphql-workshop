@@ -49,7 +49,7 @@ jobs:
   grpc-service-docker:
     name: Publish Grpc Service- Docker Hub
     runs-on: ubuntu-18.04
-    needs: [ test]
+    needs: [ test ]
     env:
       REPO: navyasolutions/grpc-service
       DIR: grpc-service

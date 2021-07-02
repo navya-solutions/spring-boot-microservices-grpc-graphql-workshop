@@ -39,3 +39,11 @@ graphql:
     tabs:
       - name: getAppDetails
         query: classpath:playground/getAppDetails.graphql
+      - name: createPost
+        query: classpath:playground/createPost.graphql
+      - name: addComment
+        query: classpath:playground/addComment.graphql
+      - name: addTag
+        query: classpath:playground/addTag.graphql
+      - name: getPost
+        query: classpath:playground/getPost.graphql

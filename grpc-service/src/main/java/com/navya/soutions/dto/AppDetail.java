@@ -2,8 +2,6 @@ package com.navya.soutions.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.io.Serializable;
 

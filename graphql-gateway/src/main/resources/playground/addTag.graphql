@@ -1,0 +1,19 @@
+mutation {
+    addTag(
+        PostId: "8E8FDC972FC144708416D587DAFAE4A1"
+        tag: { name: "name3" }
+    ) {
+        id
+        title
+        detail {
+            createdOn
+            createdBy
+        }
+        Comments {
+            review
+        }
+        tags {
+            name
+        }
+    }
+}

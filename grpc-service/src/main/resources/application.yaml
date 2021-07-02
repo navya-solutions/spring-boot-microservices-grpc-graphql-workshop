@@ -1,12 +1,35 @@
-spring:
-  main:
-    banner-mode: off
-  application:
-    name: Rest Gateway Project
-  output:
-    ansi:
-      enabled: ALWAYS
 server:
   port: ${PORT:8088}
 grpc:
   port: 6566
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: GRPC Service
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    #database-platform: org.hibernate.dialect.H2Dialect
+    #Turn Statistics on and log SQL
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      #create-drop validate create
+      ddl-auto: validate
+  # Enabling H2 Console
+  h2:
+    console:
+      enabled: true
+      # Custom H2 Console URL
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    #url: jdbc:h2:~/sampleDB
+    url: jdbc:postgresql://localhost:5432/sampleDB
+    username: sample
+    password: sample
+    #driver-class-name: org.h2.Driver
+    driver-class-name: org.postgresql.Driver

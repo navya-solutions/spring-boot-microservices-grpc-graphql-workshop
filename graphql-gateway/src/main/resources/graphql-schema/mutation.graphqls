@@ -1,0 +1,12 @@
+type Mutation {
+    createPost(post : PostInput!): PostType
+    deletePost(postId : String!): Boolean
+    addComment(PostId: String!,comment : CommentInput!): PostType
+    addTag(PostId: String!,tag : TagInput!): PostType
+
+}
+
+
+
+
+

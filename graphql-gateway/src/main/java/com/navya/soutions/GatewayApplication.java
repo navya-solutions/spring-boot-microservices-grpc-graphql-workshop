@@ -2,6 +2,7 @@ package com.navya.soutions;
 
 import com.navya.soutions.configuration.AppConfig;
 import com.navya.soutions.mapper.AppDetailMapper;
+import com.navya.soutions.mapper.PostMapper;
 import com.navya.soutions.proxy.GrpcServiceProxyClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,10 +16,12 @@ public class GatewayApplication {
     }
 
     @Bean
-    public GrpcServiceProxyClient grpcServiceProxyClient(final AppConfig appConfig, final AppDetailMapper appDetailMapper) {
+    public GrpcServiceProxyClient grpcServiceProxyClient(final AppConfig appConfig,
+                                                         final AppDetailMapper appDetailMapper,
+                                                         final PostMapper postMapper) {
         return new GrpcServiceProxyClient(appConfig.getGrpcServiceHost(),
                 Integer.parseInt(appConfig.getGrpcServicePort()),
-                appDetailMapper);
+                appDetailMapper, postMapper);
     }
 
 }

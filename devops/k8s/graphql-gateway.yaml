@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       navya.solutions.service: graphql-gateway
-  strategy: {}
+  strategy: { }
   template:
     metadata:
       labels:
@@ -32,11 +32,11 @@ spec:
           name: graphql-gateway
           ports:
             - containerPort: 8086
-          resources: {}
+          resources: { }
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null
-status: {}
+status: { }
 ---
 apiVersion: v1
 kind: Service
