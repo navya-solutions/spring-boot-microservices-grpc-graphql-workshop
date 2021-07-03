@@ -153,8 +153,13 @@ K8s cheatsheet link `https://kubernetes.io/docs/reference/kubectl/cheatsheet/`
 Go to the yaml file location to run the below commands
 
 1. Apply configuration
-   `kubectl apply -f configmap.yaml`
-   `kubectl apply -f graphql-gateway.yaml -f rest-gateway.yaml -f grpc-service.yaml`
+   `
+   kubectl apply -f configmap.yaml
+   `
+
+   `
+   kubectl apply -f graphql-gateway.yaml -f rest-gateway.yaml -f grpc-service.yaml
+   `
 2. Get k8s resources
    `kubectl get pods,service,deployment,configmap`
 

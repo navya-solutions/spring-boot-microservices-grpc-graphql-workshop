@@ -7,3 +7,6 @@ metadata:
 data:
   GRPC_SERVICE_HOST: grpc-service
   GRPC_SERVICE_PORT: "6566"
+  GRPC_SERVICE_DATASOURCE_URL: jdbc:postgresql://sample-app-instance.cemhol0nqnmv.eu-west-1.rds.amazonaws.com:5432/sampleAppDB
+  GRPC_SERVICE_DB_USERNAME: root
+  GRPC_SERVICE_DB_PASSWORD: secret99
