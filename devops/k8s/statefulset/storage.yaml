@@ -1,0 +1,42 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sample-app-sc
+provisioner: kubernetes.io/aws-ebs
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  type: gp3
+  #iopsPerGB: "10"
+  fsType: ext4
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sample-app-pv
+  labels:
+    navya.solutions.service: sample-app-pvc
+spec:
+  storageClassName: sample-app-sc
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/data"
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    navya.solutions.service: sample-app-pvc
+  name: sample-app-pvc
+spec:
+  storageClassName: sample-app-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

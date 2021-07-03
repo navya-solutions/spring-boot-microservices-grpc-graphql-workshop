@@ -9,3 +9,5 @@
 ## E2E post,comment and tag CRUD sample
 
 ## docker-compose set for postgresDB integrated with microservice
+
+## Kubernetes' configuration to run with AWS RDS
