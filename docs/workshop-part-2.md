@@ -1,4 +1,4 @@
-# Add use-case
+# Feature List
 
 ## JPA and Hibernate support
 

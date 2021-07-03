@@ -27,6 +27,21 @@ spec:
                 configMapKeyRef:
                   name: grpc-service-config
                   key: GRPC_SERVICE_PORT
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_DB_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: grpc-service-config
+                  key: GRPC_SERVICE_DB_PASSWORD
           image: navyasolutions/grpc-service:latest
           imagePullPolicy: ""
           name: grpc-service

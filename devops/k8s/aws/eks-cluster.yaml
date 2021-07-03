@@ -1,0 +1,22 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: sample-app
+  region: eu-west-1
+  version: "1.20"
+vpc:
+  subnets:
+    public:
+      eu-west-1c:
+        id: "subnet-f11857b9"
+      eu-west-1a:
+        id: "subnet-2a0fb170"
+      eu-west-1b:
+        id: "subnet-7c473b1a"
+managedNodeGroups:
+  - name: ng-sample-app
+    desiredCapacity: 2
+    instanceType: t3.small
+

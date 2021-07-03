@@ -1,4 +1,4 @@
-# Add use-case
+# Feature List
 
 ## Gateway project for GraphQl and Rest
 
