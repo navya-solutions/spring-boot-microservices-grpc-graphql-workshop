@@ -1,154 +1,140 @@
-# How to generate kubernetes configuration files
+# AWS EKS setup
 
-Most common way to create kubernetes configuration files are:
+## Steps to create EKS cluster
 
-1. Manually
-2. Using Dekorate -Java compile-time generators)
-3. Using kompose - Conversion tool from Docker Compose files to container orchestrators (Kubernetes or OpenShift)
+### prerequisite
 
-## Dekorate
+AWS CLI version 2 - https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 
-Can find installation and how to use details at: `https://dekorate.io/dekorate/#kubernetes`
-Example:
+eksctl - https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
 
-``` 
-@KubernetesApplication(
-name = "graphql-gateway",
-version = "v1",
-        ports = {
-                @Port(name = "web", containerPort = 8086),
-                },
-        envVars = {
-                @Env(name = "grpcServiceHost", configmap = "app-config", value = "grpc-service"),
-                @Env(name = "grpcServicePort", configmap = "app-config", value = "6565"),
-        },
-        //pvcVolumes = @PersistentVolumeClaimVolume(volumeName = "postgres-volume", claimName = "mysql-dev"),
-        //mounts = @Mount(name = "postgres-volume", path = "/var/lib/mysql")
+kubectl - https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
 
-)
-@DockerBuild(image = "navyasolutions/graphql-gateway:latest")
-public class GatewayApplication {}
+### Setup environment variables
+
+```
+export DEV_AWS_REGION=eu-west-1 <-- Change this to match your region
+export DEV_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+export DEV_EKS_CLUSTER=sample-app <-- cluster name as per your requirement
+export AZS=($(aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text --region $DEV_AWS_REGION))
+export DEV_PRIVATE_SUBNET=($(aws ec2 describe-subnets --filter Name=vpc-id,Values=vpc-2ca2a14a --query 'Subnets[?MapPublicIpOnLaunch==`false`].SubnetId' --output text))
+export DEV_PUBLIC_SUBNET=($(aws ec2 describe-subnets --filter Name=vpc-id,Values=vpc-2ca2a14a --query 'Subnets[?MapPublicIpOnLaunch==`true`].SubnetId' --output text))
+export DEV_EKS_NODE_GROUP_NAME=ng-sample-app <-- cluster name as per your requirement
 ```
 
-## Kompose
+### Create an EKS cluster
 
-Can find installation details at: `https://kompose.io/installation/`
-Can find how to use details at: `https://kubernetes.io/docs/tasks/configure-pod-container/translate-compose-kubernetes/`
+#### Create an eksctl deployment file (eks-cluster.yaml) use in creating your cluster using the following syntax:
 
-Basic step are:
+```
+cat << EOF > eks-cluster.yaml
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
 
-1. Install Kompose
-2. Open the terminal, go to the location of docker-compose.yaml file
-3. run `kompose convert`
-4. Environment and secret parameters are not converted automatically. We have to manually create/migrate parameters to
-   K8s configMap and secret.Examples `configmap.yaml`. We can read more about it
-   at: `https://kubernetes.io/docs/concepts/configuration/configmap/`
-5. We need to change the K8s configuration files metadata, labels, names etc as per project requirement
-6. We need to merge the configuration file as per requirement, by default Kompose create separate file for each K8s kind
+metadata:
+  name: ${DEV_EKS_CLUSTER}
+  region: ${DEV_AWS_REGION}
+  version: "1.20"
+vpc:
+  subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+    public:
+      eu-west-1a:
+        id: "${DEV_PUBLIC_SUBNET[0]}"
+      eu-west-1b:
+        id: "${DEV_PUBLIC_SUBNET[1]}"
+      eu-west-1c:
+        id: "${DEV_PUBLIC_SUBNET[2]}"
+nodeGroups:
+- name: ng-${DEV_EKS_CLUSTER}
+  desiredCapacity: 2
+  instanceType: t3.small
 
-# How to run and test K8s on location machine
+EOF
 
-Options are:
+```
 
-1. Microk8s - https://microk8s.io/
-2. MiniKube
+Note! make sure that the region and subnet matches as per the existing VPC setup
 
-## MiniKube
+#### Next, use the file you created as the input for the eksctl cluster creation.
 
-Installation and configuration details are at: `https://minikube.sigs.k8s.io/docs/start/`
-Import configuration point:
-minikube dashboard -- provide the dashboard view to monitor k8s resources minikube tunnel -- start/resolve service
-loadbalancer pending issues. More details are at :
-`https://stackoverflow.com/questions/44110876/kubernetes-service-external-ip-pending`
-minikube addons enable ingress -- activate to work on ingress
+```
+eksctl create cluster -f eks-cluster.yaml  <-- this file is placed at devops/k8s/aws/eks-cluster.yaml
+```
 
-# How to deploy on AWS EKS
+#### status check for eks cluster
 
-1. Using AWS Console
-2. Using eksctl : `https://eksctl.io/`
-3. Using AWS CDK
-4. Using EC2 cluster
+```
+ aws eks --region $DEV_AWS_REGION describe-cluster --name  $DEV_EKS_CLUSTER --query cluster.status
+```
 
-## AWS Console
+### Access EKS cluster for local machine
 
-https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
-link: https://www.youtube.com/watch?v=SsUnPWp5ilc
+#### Update local machine kubectl context
 
-## eksctl
+```
+aws eks  update-kubeconfig --name  $DEV_EKS_CLUSTER --region $DEV_AWS_REGION
+```
 
-https://www.eksworkshop.com/010_introduction/
-https://aws.amazon.com/eks/getting-started/
-https://www.youtube.com/watch?v=p6xDCz00TxU
+To check the active context -
 
-## AWK EKS
+```
+kubectl config get-contexts
 
-https://www.youtube.com/watch?v=X2ljiOx6BMQ
+kubectl config view --minify
+```
 
-# Required tools to connet and deploy resources on AWS EKS
+#### Deploy Kubernetes dashboard details using /dashboard/README.md
 
-1. install kubctl using https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
-   `curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.20.4/2021-04-12/bin/linux/amd64/kubectl
-   chmod +x ./kubectl mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc kubectl version --short --client`
-2. install eksctl using https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html
-   `curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp sudo mv /tmp/eksctl /usr/local/bin eksctl version`
-3. Install aws-iam-authenticator
-   using https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
-   `curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator
-   chmod +x ./aws-iam-authenticator mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc aws-iam-authenticator help`
-4. status check for eks cluster aws eks --region eu-west-1 describe-cluster --name cluster-name --query cluster.status
+[Kubernetes Dashboard setup](../dashboard/README.md)
 
-5. Connect EKS cluster from local machine/EC2 OR Update local kubectl file to connect to the AWS EKS cluster
-    1. update the Cluster secutriy group to allow the traffic from your EC2 machine
-    2. update kubctl config file using below command (activate the kubectl context)
-       aws eks --region eu-west-1 update-kubeconfig --name cluster-name
+### Delete EKS cluster
 
-   aws eks --region eu-west-1 update-kubeconfig --name eks-cluster-name
+```
+eksctl delete cluster $DEV_EKS_CLUSTER --region $DEV_AWS_REGION
+```
 
-   To check the active context - kubectl config get-contexts
+### Create RDS
 
-   NOTE! CDK generate a role *clusteridMastersRole* which is used to connect to the EKS master node from local system
-   aws eks --region eu-west-1 update-kubeconfig --name eks-cluster-name --role-arn arn:aws:iam::XXXXXXXXXXXX:
-   role/XXXXXXXXXXXclusteridCreationRole-XXXXXx
+#### Setup environment variables
 
-        3. update as per the clsuter role/user and apply - kubectl apply -f /dashboard/eks-admin-service-account.yaml
-   	4. check the Master role has trusted relationship
-   	{
+```
 
-"Version": "2012-10-17",
-"Statement": [
-{
-"Effect": "Allow",
-"Principal": {
-"AWS": "arn:aws:iam::XXXXXXXXXXXXXXXXX:root"
-},
-"Action": "sts:AssumeRole"
-}
-]
-}
+export DEV_AWS_DB_INSTANCE_IDENTIFIER=sample-app-instance
+```
 
-6. Add AWS role to cluster *No need to use this for now *
-   eksctl utils write-kubeconfig --cluster eks-cluster-name --region eu-west-1 --authenticator-role-arn arn:aws:iam::
-   XXXXXXXXXXXXXXX:role/role-name
-7. check the kubctl context kubectl config view --minify
-8. Access related issues in case of eks nocredentialproviders load balancer error
-    - https://tutorials.releaseworksacademy.com/learn/how-to-debug-the-alb-controller-for-fargate-on-eks.html
-    - https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
-      https://docs.aws.amazon.com/eks/latest/userguide/managing-auth.html
-      https://aws.amazon.com/premiumsupport/knowledge-center/eks-api-server-unauthorized-error/
+#### Create RDS
 
-9 Deploy kubernetes dashboard details are at /dashboard/README.md
+```
+aws rds create-db-instance \
+--db-name sampleBD \
+--db-instance-identifier $DEV_AWS_DB_INSTANCE_IDENTIFIER \
+--db-instance-class db.t3.micro \
+--engine postgres \
+--master-username root \
+--master-user-password secret99 \
+--max-allocated-storage 50 \
+--backup-retention-period 10 \
+--allocated-storage 20
+```
 
-Important link:
+#### Open traffic between database and EKS cluster
 
-- https://zero-to-jupyterhub.readthedocs.io/en/latest/kubernetes/amazon/step-zero-aws-eks.html
+Update database security group inbound rule to allow traffic from EKS cluster for port 5432
 
-2. https://zero-to-jupyterhub.readthedocs.io/en/latest/kubernetes/amazon/step-zero-aws.html
+### Delete RDS
 
-# K8s common commands
+```
+aws rds delete-db-instance \
+	--db-instance-identifier $DEV_AWS_DB_INSTANCE_IDENTIFIER  \
+	--skip-final-snapshot
+	
+```
 
-K8s cheatsheet link `https://kubernetes.io/docs/reference/kubectl/cheatsheet/`
+#### link for more details https://aws.amazon.com/getting-started/hands-on/create-connect-postgresql-db/
 
-### Deploy resources
+### Deploy resources on EKS
 
 Go to the yaml file location to run the below commands
 
@@ -161,7 +147,9 @@ Go to the yaml file location to run the below commands
    kubectl apply -f graphql-gateway.yaml -f rest-gateway.yaml -f grpc-service.yaml
    `
 2. Get k8s resources
-   `kubectl get pods,service,deployment,configmap`
+   `
+   kubectl get pods,service,deployment,configmap
+   `
 
 ### Scale up
 
@@ -170,12 +158,15 @@ Go to the yaml file location to run the below commands
 ### update/replace
 
 `kubectl replace --force -f configmap.yaml`
+
 `kubectl set image deployment/graphql-gateway graphql-gateway=navyasolutions/graphql-gateway:latest`
+
 `kubectl set resources deployment graphql-gateway --limits=cpu=200m,memory=512Mi --requests=cpu=100m,memory=256Mi`
 
-### history
+### History
 
 `kubectl rollout history deployment/graphql-gateway`
+
 `kubectl rollout history deployment/graphql-gateway -o yaml`
 
 ### Delete resources
@@ -189,10 +180,11 @@ delete service
 delete deployment
 ` kubectl delete deployment.apps/graphql-gateway deployment.apps/grpc-service  deployment.apps/rest-gateway`
 
-APp URL :
+APP URL :
 http://LOAD-BALANCER_ARM:8086/graphql
 http://LOAD-BALANCER_ARM:8086/playground
 
-### add support for https using AWS certificate
+#### Add SSL support using AWS certificate
 
-https://aws.amazon.com/premiumsupport/knowledge-center/terminate-https-traffic-eks-acm/
+configuration defined at
+` devops/k8s/aws/aws-ssl-cert/graphql-gateway-enable-aws-https-config.yaml`
