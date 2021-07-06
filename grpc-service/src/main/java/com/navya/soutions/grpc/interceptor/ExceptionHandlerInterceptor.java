@@ -2,14 +2,29 @@ package com.navya.soutions.grpc.interceptor;
 
 import com.navya.soutions.exception.CustomException;
 import io.grpc.*;
+import lombok.extern.slf4j.Slf4j;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
+
+import static io.grpc.Metadata.ASCII_STRING_MARSHALLER;
+
+@Slf4j
 
 @GRpcGlobalInterceptor
 public class ExceptionHandlerInterceptor implements ServerInterceptor {
 
+
+    public static final Metadata.Key<String> TRACE_ID = Metadata.Key.of("x-b3-traceid", ASCII_STRING_MARSHALLER);
+
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> serverCall, Metadata metadata,
                                                                  ServerCallHandler<ReqT, RespT> serverCallHandler) {
+        // ... get trace info from metadata
+        String traceId = metadata.get(TRACE_ID);
+        metadata.keys().stream().forEach(s -> {
+            log.info(">>>>>>>>>>>>> {}", s);
+
+        });
+        log.info(">>>>>>>>>>>>>traceId {} ", traceId);
         final ServerCall.Listener<ReqT> listener = serverCallHandler.startCall(serverCall, metadata);
         return new ExceptionHandlingServerCallListener<>(listener, serverCall, metadata);
     }

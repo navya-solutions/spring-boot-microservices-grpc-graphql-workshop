@@ -33,3 +33,6 @@ spring:
     password: sample
     #driver-class-name: org.h2.Driver
     driver-class-name: org.postgresql.Driver
+custom:
+  zipkin:
+    enabled: false
