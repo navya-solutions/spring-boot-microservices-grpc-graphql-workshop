@@ -6,6 +6,12 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+#Uncomment the follow three lines to disable reporting to zipkin.
+custom:
+  zipkin:
+    enabled: false
+
+
 server:
   port: ${PORT:8086}
 

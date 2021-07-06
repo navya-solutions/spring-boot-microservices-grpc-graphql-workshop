@@ -1,5 +1,6 @@
 package com.navya.soutions.proxy;
 
+import brave.grpc.GrpcTracing;
 import com.navya.solutions.grpc.proto.service.*;
 import com.navya.soutions.common.CustomUtils;
 import com.navya.soutions.graphql.input.CommentInput;
@@ -9,6 +10,7 @@ import com.navya.soutions.graphql.type.AppDetailType;
 import com.navya.soutions.graphql.type.PostType;
 import com.navya.soutions.mapper.AppDetailMapper;
 import com.navya.soutions.mapper.PostMapper;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +23,30 @@ public class GrpcServiceProxyClient implements GrpcServiceProxy {
     private final SampleServiceGrpc.SampleServiceBlockingStub sampleServiceBlockingStub;
     private final AppDetailMapper appDetailMapper;
     private final PostMapper postMapper;
+    private final GrpcTracing grpcTracing;
 
-    public GrpcServiceProxyClient(final String host, int port, final AppDetailMapper appDetailMapper, final PostMapper postMapper) {
+    //private Tracer tracer;
+
+    public GrpcServiceProxyClient(final String host, int port, final AppDetailMapper appDetailMapper,
+                                  final PostMapper postMapper, final GrpcTracing grpcTracing) {
+        this.grpcTracing = grpcTracing;
+        final ClientInterceptor clientInterceptor = grpcTracing
+                .newClientInterceptor();
+
+        /*TracingClientInterceptor tracingInterceptor = TracingClientInterceptor
+                .newBuilder()
+                .withTracer(this.tracer)
+                .build();
+*/
+
         this.channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
+                .intercept(clientInterceptor)
                 .build();
-        this.sampleServiceBlockingStub = SampleServiceGrpc.newBlockingStub(channel);
+        this.sampleServiceBlockingStub = SampleServiceGrpc
+                //.newBlockingStub(tracingInterceptor.intercept(channel));
+                .newBlockingStub(channel);
         this.appDetailMapper = appDetailMapper;
         this.postMapper = postMapper;
 
