@@ -1,4 +1,4 @@
-name: Graphql Gateway Master Branch
+name: GRPC Service Master Branch
 
 on:
   push:
