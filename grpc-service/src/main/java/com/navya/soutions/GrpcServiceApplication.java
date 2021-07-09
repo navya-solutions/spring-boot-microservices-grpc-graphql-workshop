@@ -3,6 +3,8 @@ package com.navya.soutions;
 import brave.Tracing;
 import brave.grpc.GrpcTracing;
 import io.grpc.ServerInterceptor;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.boot.ApplicationRunner;
@@ -61,5 +63,9 @@ public class GrpcServiceApplication {
         };
     }
 
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
+    }
 
 }
