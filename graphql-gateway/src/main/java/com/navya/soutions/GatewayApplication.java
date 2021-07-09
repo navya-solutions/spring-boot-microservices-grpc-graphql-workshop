@@ -6,6 +6,8 @@ import com.navya.soutions.configuration.AppConfig;
 import com.navya.soutions.mapper.AppDetailMapper;
 import com.navya.soutions.mapper.PostMapper;
 import com.navya.soutions.proxy.GrpcServiceProxyClient;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,6 +52,11 @@ public class GatewayApplication {
                 log.info(span.toString());
             }
         };
+    }
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
     }
 
 

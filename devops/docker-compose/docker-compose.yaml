@@ -51,8 +51,57 @@ services:
       PGDATA: /var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  storage:
+    image: ghcr.io/openzipkin/zipkin-elasticsearch7:${TAG:-latest}
+    container_name: elasticsearch
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    # Uncomment to expose the storage port for testing
+    ports:
+      - 9200:9200
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim:${TAG:-latest}
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      # Point the zipkin at the storage backend
+      - ES_HOSTS=elasticsearch:9200
+      # Uncomment to see requests to and from elasticsearch
+      - ES_HTTP_LOGGING=BODY
+      # Uncomment to enable self-tracing
+      # - SELF_TRACING_ENABLED=true
+      # Uncomment to increase heap size
+      # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+    command: --logging.level.zipkin2=DEBUG
+    depends_on:
+      - storage
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
 networks:
   ns-network:
 
 volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  elasticsearch-data:
+    driver: local
   ns-volume:

@@ -1,58 +1,20 @@
-version: "3.8"
+version: '3.8'
+
 services:
-  graphql-gateway:
-    container_name: graphql-gateway
-    image: navyasolutions/graphql-gateway:latest
-    networks:
-      - ns-network
-    environment:
-      app-config.grpcServiceHost: "${GRPC_SERVICE_HOST}"
-      app-config.grpcServicePort: "${GRPC_SERVICE_PORT}"
-    ports:
-      - 8086:8086
-    depends_on:
-      - grpc-service
-
-  rest-gateway:
-    container_name: rest-gateway
-    image: navyasolutions/rest-gateway:latest
-    networks:
-      - ns-network
-    ports:
-      - 8087:8087
-
-  grpc-service:
-    container_name: grpc-service
-    image: navyasolutions/grpc-service:latest
-    networks:
-      - ns-network
-    volumes:
-      - ~/docker/grpc-service/:/app
-    ports:
-      - 6566:6566
-    environment:
-      SPRING_DATASOURCE_URL: "${GRPC_SERVICE_DATASOURCE_URL}"
-      SPRING_DATASOURCE_USERNAME: "${GRPC_SERVICE_DB_USERNAME}"
-      SPRING_DATASOURCE_PASSWORD: "${GRPC_SERVICE_DB_PASSWORD}"
-    depends_on:
-      - postgres
-
-
-  postgres:
-    container_name: workshop-postgresql
-    image: navyasolutions/workshop-postgresql:1.0
-    volumes:
-      - ns-volume:/var/lib/postgresql/data
-    networks:
-      - ns-network
+  prometheus:
+    image: prom/prometheus:latest
     restart: always
-    environment:
-      POSTGRES_PASSWORD: st001_op
-      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - 5432:5432
-networks:
-  ns-network:
+      - 9090:9090
 
-volumes:
-  ns-volume:
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
