@@ -52,7 +52,7 @@ services:
     ports:
       - 5432:5432
 
-  storage:
+  zipkin-storage:
     image: ghcr.io/openzipkin/zipkin-elasticsearch7:${TAG:-latest}
     container_name: elasticsearch
     volumes:
@@ -60,43 +60,54 @@ services:
     # Uncomment to expose the storage port for testing
     ports:
       - 9200:9200
+    networks:
+      - ns-network
+
   zipkin:
     image: ghcr.io/openzipkin/zipkin-slim:${TAG:-latest}
     container_name: zipkin
     environment:
-      - STORAGE_TYPE=elasticsearch
-      # Point the zipkin at the storage backend
-      - ES_HOSTS=elasticsearch:9200
+      ES_HOSTS: zipkin-storage:9200
+      STORAGE_TYPE: elasticsearch
       # Uncomment to see requests to and from elasticsearch
-      - ES_HTTP_LOGGING=BODY
+      ES_HTTP_LOGGING: BODY
       # Uncomment to enable self-tracing
-      # - SELF_TRACING_ENABLED=true
+       #SELF_TRACING_ENABLED: "true"
       # Uncomment to increase heap size
       # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
     ports:
       # Port used for the Zipkin UI and HTTP Api
       - 9411:9411
+    networks:
+      - ns-network
     command: --logging.level.zipkin2=DEBUG
     depends_on:
-      - storage
+      - zipkin-storage
 
   prometheus:
+    container_name: prometheus
     image: prom/prometheus:latest
     restart: always
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
+    networks:
+      - ns-network
 
   grafana:
+    container_name: grafana
     image: grafana/grafana
     environment:
       GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - ns-network
     depends_on:
       - prometheus
+
 networks:
   ns-network:
 

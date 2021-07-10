@@ -12,3 +12,6 @@ scrape_configs:
     scrape_interval: 5s # How frequently to scrape targets from this job.
     static_configs: # A static_config allows specifying a list of targets and a common label set for them
       - targets: ['192.168.1.156:8088']
+
+
+#Note: Use machine IP as target when run prometheus inside docker and app on machine
