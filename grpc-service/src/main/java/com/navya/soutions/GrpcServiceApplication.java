@@ -18,7 +18,7 @@ import zipkin2.reporter.Reporter;
 import java.util.List;
 
 @SpringBootApplication
-@Slf4j
+@Slf4j(topic = "GRPC-SERVICE-APPLICATION")
 public class GrpcServiceApplication {
 
     public static void main(String[] args) {
@@ -67,5 +67,4 @@ public class GrpcServiceApplication {
     public TimedAspect timedAspect(MeterRegistry registry) {
         return new TimedAspect(registry);
     }
-
 }
