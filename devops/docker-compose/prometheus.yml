@@ -6,9 +6,9 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'  # The HTTP resource path on which to fetch metrics from targets.
     scrape_interval: 5s # How frequently to scrape targets from this job.
     static_configs:
-      - targets: ['graphql-gateway:9090']
+      - targets: ['192.168.1.156:8086']
   - job_name: grpc-service # The job name is assigned to scraped metrics by default.
     metrics_path: '/actuator/prometheus'  # The HTTP resource path on which to fetch metrics from targets.
     scrape_interval: 5s # How frequently to scrape targets from this job.
     static_configs: # A static_config allows specifying a list of targets and a common label set for them
-      - targets: ['grpc-service:6566']
+      - targets: ['192.168.1.156:8088']
